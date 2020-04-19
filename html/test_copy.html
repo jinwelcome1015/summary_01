@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/jQuery/jquery.js"></script>
+</head>
+<body>
+    <div>
+        <input type="button" value="test" id="testBtn">
+    </div>    
+    <div>
+        <ol id="countryList">
+            <li>룩셈부르크</li>
+            <li>대한민국</li>
+            <li>일본</li>
+            <li>러시아</li>
+            <li>중국</li>
+            <li>미국</li>
+            <li>북한</li>
+            <li>가나</li>
+            <li>아프리카</li>
+        </ol>
+    </div>
+
+    <br>
+    
+    <script>
+        var _temp;
+
+        // window객체의 onload 이벤트 핸들러 등록(property 방식)
+        onload = function(){
+            console.log("window.onload 이벤트");
+            // addJqueryLib(); // 제이쿼리 라이브러리 로드        
+            // _temp = $("#countryList li").plugIn_01(objCstm);      
+
+
+            objCstm = {
+                prop_02 : "c_02",
+                prop_03 : "c_03"
+            };
+
+            _temp = $("#countryList li").plugIn_01(objCstm).plugIn_02();
+        };
+
+        // 제이쿼리객체의 ready메소드(해당 제이쿼리객체가 ready상태가 되었을때, 인자로 전달받은 콜백함수를 호출)
+        $(document).ready(function(){
+            console.log("document.ready 이벤트");
+            fn_testBtn_onClick();
+        });
+        
+        /* 
+        // 함수 : 제이쿼리 라이브러리 로드
+        function addJqueryLib(){
+            var head= document.getElementsByTagName('head')[0];
+            var script= document.createElement('script');
+            script.type= 'text/javascript';
+            script.src= '../js/jQuery/jquery.js';
+            head.appendChild(script);
+        }
+         */
+
+        function fn_testBtn_onClick(){
+            document.getElementById("testBtn").onclick = function(){
+                test_001();
+            }
+        }
+        
+        // IIFE (Immediately Invoked Function Expressions, 즉시 호출 함수 표현식의 줄임말)
+        (function($){
+            
+            // 객체 생성자 함수(클래스)
+            function Obj_01(objParam){
+                this.prop_01;
+                this.prop_02;
+                this.prop_03;
+                this.method_01 = function(){};
+                this.method_02 = function(){};
+                
+                this.init(objParam);
+                this.initEvent();
+            }
+
+            // 객체 초기화 메서드 (객체마다 메서드를 만들어서 메모리 낭비되지 않게끔 하기위해, 객체의 프로토타입에 있는 메서드를 호출하도록, 프로토타입 객체에 메서드를 멤버로 추가한다.)
+            Obj_01.prototype.init = function(objParam){
+                this.prop_01 = objParam.prop_01;
+                this.prop_02 = objParam.prop_02;
+                this.prop_03 = objParam.prop_03;
+            }
+
+            // 이벤트 초기화 메서드 (부가기능)
+            Obj_01.prototype.initEvent = function(){
+            }
+            
+            // 객체 메서드 01 (기능 제공용)
+            Obj_01.prototype.doSomething_01 = function(){
+            }
+
+            // 객체 메서드 02 (기능 제공용)
+            Obj_01.prototype.doSomething_02 = function(){
+                console.log(this);
+            }
+
+            // 기본 초기화 데이터 저장용 객체 (object literal 방식)
+            var objDefaultOpt = {
+                prop_01 : "d_01",
+                prop_02 : "d_02",
+                prop_03 : "d_03"
+            }
+
+            // 제이쿼리 클래스(static) 메소드(생성자 함수의 멤버 메소드) $.extend()에 전달될
+            // 초기화 데이터 저장용 객체 (object literal 방식)
+            // $.extend()에서는 인자로 전달된 1번째 객체의 멤버를 2번째 객제의 멤버로 overwrite 한 객체를 반환한다.            
+            var objCstm;
+            
+
+        
+            // 제이쿼리 플러그인 (제이쿼리 객체 메소드) : 제이쿼리 객체가 내부적으로 갖고 있는 DOM 노드에 대해, 특정 로직을 반복수행하는 기능을 갖고 있는 메소드.
+            // 따라서, 제이쿼리 오브젝트 메소드 (제이쿼리 클래스 메소드(생성자 함수의 멤버 메소드) 아님) 인 
+            // $().each() 를 호출하게끔 해야 한다.
+            $.fn.plugIn_01 = function(objCustomOpt){
+
+                // plugIn_01() 호출 후, plugIn_02()가 호출된다는 가정하에, 
+                // plugIn_01() 에서 위임객체를 생성하고, 그 객체에 대한 reference를 $().data() ($.data() 아님) 통해서, $(this)가 포장하고 있는 DOM 노드 (HTML 요소) 에 data-* 속성으로 저장한다.
+                // plugIn_02() 에서는 그 DOM 객체에 data-*속성으로 저장된 위임객체에 대한 reference 를 얻어서, 그 객체의 멤버를 호출하는데 사용한다. 
+                // (각 플러그인마다 위임객체를 생성하지 않고 공유하게끔 하는 방법)
+                var objApplyOpt = $.extend(null, objDefaultOpt, objCustomOpt);
+                var obj_01 = new Obj_01(objApplyOpt);    
+
+                // 제이쿼리 객체가 포장하고 있는 각각의 DOM 노드에 대해 인자로 전달받은 콜백함수를 호출한다. 
+                // (콜백함수를 호출하는 주체는 DOM노드이다. 즉, DOM노드객체.콜백함수();)
+                // 따라서 콜백함수 안의 this는 콜백함수를 호출하는 주체인 DOM 노드이다.
+                // this.each()의 this : 제이쿼리객체
+                // $(this).data()의 this : Dom 노드 객체
+                this.each(function(index, element){
+
+                    $(this).data("obj_01", obj_01); 
+
+                    var objUse = $(this).data("obj_01");
+                    objUse.doSomething_01();
+                });
+
+                // 메소드 체이닝(method chaining)을 위해, 플러그인을 호출한 제이쿼리객체 자기자신을 리턴한다.
+                return this;
+            };
+
+
+            $.fn.plugIn_02 = function(objCustomOpt){
+
+                // var objApplyOpt = $.extend(null, objDefaultOpt, objCustomOpt);
+                // var obj_01 = new Obj_01(objApplyOpt);
+
+                this.each(function(index, element){
+
+                    var objUse = $(this).data("obj_01");
+                    objUse.doSomething_02();
+                });
+
+                return this;
+            };
+        })(jQuery);
+
+        
+
+        // $("#countryList li").plugIn_01(objCstm).plugIn_02();
+
+        function test_001(){
+            _temp.plugIn_02();
+        }
+
+    </script>
+</body>
+</html>
