@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function MyParent(){
+            this._p_field_01 = '부모필드_01';
+            this._p_field_02 = '부모필드_02';
+        }
+
+        MyParent.prototype.p_method_01 = function(){
+            console.log('부모메서드_01 입니다.');
+        };
+
+        MyParent.prototype.p_method_02 = function(){
+            console.log('부모메서드_02 입니다.');
+        };
+
+        function MyChild(){
+            this._c_field_01 = '자식필드_01';
+            this._c_field_02 = '자식필드_02';
+        }
+
+        MyChild.prototype.c_method_01 = function(){
+            console.log('자식메서드_01 입니다. (프로토타입 변경 전)');
+        };
+
+        MyChild.prototype.c_method_02 = function(){
+            console.log('자식메서드_02 입니다. (프로토타입 변경 전)');
+        };
+
+        var objBackupMyChildPrototype = MyChild.prototype;
+        MyChild.prototype = new MyParent();
+
+        MyChild.prototype.c_method_03 = function(){
+            console.log('자식메서드_03 입니다. (프로토타입 변경 후)');
+        };
+
+        MyChild.prototype.c_method_04 = function(){
+            console.log('자식메서드_04 입니다. (프로토타입 변경 후)');
+        };
+
+        var objMyParent = new MyParent();
+        var objMyChild = new MyChild();
+        
+        console.log("상속을 위해 프로토타입을 변경을 해도, 이전 디폴트 프로토타입은 여전히 기존 함수를 constructor 로 참조한다?(true/false) " + (objBackupMyChildPrototype.constructor == MyChild));
+        console.log("new로 생성된 객체들은 자신들이 constructor 속성을 갖고 있지 않지만, __proto__ 속성 또는 prototype 속성을 통한 prototype chain 에 의해 constructor 속성을 찾아올라간다. 다음의 결과로 알수 있다.")
+        console.log("(MyChild.prototype.constructor == MyParent)? (true/false) " + (MyChild.prototype.constructor == MyParent));
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
